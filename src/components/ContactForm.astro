@@ -2,7 +2,9 @@
 interface Props {lang?: 'nb'|'en'}
 const {lang='nb'}=Astro.props;
 const en=lang==='en';
+const configured=Boolean(import.meta.env.PUBLIC_CONTACT_ENDPOINT);
 ---
+{configured ? (
 <form class="contact-form card" data-contact-form novalidate>
   <div class="form-grid">
     <label>{en?'Name':'Navn'} <input name="name" required maxlength="120" autocomplete="name" /></label>
@@ -11,17 +13,20 @@ const en=lang==='en';
   <label>{en?'Subject':'Emne'} <input name="subject" required maxlength="160" /></label>
   <label>{en?'Message':'Melding'} <textarea name="message" required maxlength="5000" rows="7"></textarea></label>
   <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off" /></label></div>
-  <p class="form-note">{en?'We use the details provided solely to respond to your enquiry. Please do not send passwords, health information or other sensitive data.':'Vi bruker opplysningene du sender kun til å besvare henvendelsen. Ikke send passord, helseopplysninger eller andre sensitive data.'}</p>
+  <p class="form-note">{en?'Your details will be used to respond to your message. Please do not send sensitive information.':'Opplysningene brukes til å besvare henvendelsen. Ikke send sensitive opplysninger.'}</p>
   <button type="submit">{en?'Send message':'Send melding'}</button>
   <p class="form-status" role="status" aria-live="polite" data-form-status></p>
 </form>
+) : (
+<p class="form-note" role="status">{en?'Our contact form is being configured and is temporarily unavailable.':'Kontaktskjemaet blir konfigurert og er midlertidig utilgjengelig.'}</p>
+)}
 <script>
-  const endpoint='https://contact.ploos.no/';
-  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach(form=>{
+  const endpoint=import.meta.env.PUBLIC_CONTACT_ENDPOINT;
+  if (endpoint) document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach(form=>{
     const status=form.querySelector<HTMLElement>('[data-form-status]')!;
     const button=form.querySelector<HTMLButtonElement>('button[type=submit]')!;
     const en=document.documentElement.lang==='en';
-    form.addEventListener('submit', async event=>{
+    form.addEventListener('submit',async event=>{
       event.preventDefault();
       if (!form.reportValidity()) return;
       const data=Object.fromEntries(new FormData(form));
@@ -29,12 +34,12 @@ const en=lang==='en';
       status.textContent=en?'Sending…':'Sender…';
       try {
         const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),mode:'cors'});
-        if (!response.ok) throw new Error('Delivery failed');
+        if(!response.ok) throw new Error('Delivery failed');
         form.reset();
         status.textContent=en?'Thank you. Your message has been sent.':'Takk! Meldingen din er sendt.';
-      } catch {
+      }catch{
         status.textContent=en?'The form is temporarily unavailable. Please try again later.':'Kontaktskjemaet er midlertidig utilgjengelig. Prøv igjen senere.';
-      } finally {button.disabled=false}
+      }finally{button.disabled=false}
     });
   });
 </script>

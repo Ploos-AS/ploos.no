@@ -2,37 +2,26 @@
 
 Official Norwegian/English company website for Ploos AS.
 
-## Technology
-Astro 5, Tailwind CSS 4, static generation and GitHub Pages. No server, cookies, trackers or database.
+## Stack
+Astro + Tailwind, static GitHub Pages hosting and Domeneshop DNS. No database. The contact receiver is an optional Cloudflare Worker on `workers.dev`; **Domeneshop remains DNS provider**.
 
 ## Scope
-- Official Ploos AS presentation
-- HackShack (online store in development)
-- HackShack Labs (planned testing and documentation)
-- Open-source projects via GitHub
-- Norwegian and English supplier/partner landing pages
+- Ploos AS company presentation
+- HackShack — store in development
+- HackShack Labs — planned tests and documentation
+- GitHub open-source projects
+- Norwegian and English partner pages
 
 shells.no is intentionally excluded.
 
 ## Development
-Install Node.js 22+; run:
-
-```sh
-npm install
-npm run dev
-npm run check
-npm run build
-```
+Node.js 22+. Run `npm install`, `npm run dev`, `npm run check`, `npm run build`.
 
 ## Publishing
-1. Merge pull request to `main` once validation succeeds.
-2. In repository Settings → Pages, select **GitHub Actions** as source.
-3. Enter custom domain `ploos.no` in GitHub Pages settings.
-4. Point DNS A/AAAA and www CNAME records to GitHub Pages. **Preserve email DNS records.**
-5. Enable HTTPS when certificate is ready. Confirm the domain is verified.
-6. Any future push to `main` deploys automatically.
+On merge to main, GitHub Actions builds and deploys to GitHub Pages. In Settings → Pages, choose GitHub Actions and domain `ploos.no`. Keep Domeneshop A/AAAA/CNAME pointing to GitHub Pages and preserve mail DNS records.
 
-The deployed `public/CNAME` file is set to `ploos.no`; it doesn't replace configuration of Pages settings.
+## Contact form
+Do **not** put business email addresses in rendered pages. See [worker/README.md](worker/README.md) for setup. The form stays unavailable until the GitHub Actions repository variable `PUBLIC_CONTACT_ENDPOINT` is set and the Worker and email delivery are configured and tested.
 
-## Licensing
-MIT for code and CC BY 4.0 for original editorial text. Names, brand marks and third-party assets excluded.
+## License
+MIT code; CC BY 4.0 original editorial text. Trademarks excluded.
