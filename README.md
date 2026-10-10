@@ -1,23 +1,38 @@
 # ploos.no
 
-Official bilingual company website for Ploos AS. Astro + Tailwind CSS, published as a static site through GitHub Pages.
+Official Norwegian/English company website for Ploos AS.
+
+## Technology
+Astro 5, Tailwind CSS 4, static generation and GitHub Pages. No server, cookies, trackers or database.
 
 ## Scope
-- Ploos AS company presentation
+- Official Ploos AS presentation
 - HackShack (online store in development)
-- HackShack Labs (planned test and documentation resource)
-- Open-source work via GitHub
-- Norwegian and English supplier pages
+- HackShack Labs (planned testing and documentation)
+- Open-source projects via GitHub
+- Norwegian and English supplier/partner landing pages
 
 shells.no is intentionally excluded.
 
-## Local development
+## Development
+Install Node.js 22+; run:
 
-Node.js 22+. Run `npm install`, `npm run dev`, `npm run check`, `npm run build`.
+```sh
+npm install
+npm run dev
+npm run check
+npm run build
+```
 
-## GitHub Pages deployment
+## Publishing
+1. Merge pull request to `main` once validation succeeds.
+2. In repository Settings → Pages, select **GitHub Actions** as source.
+3. Enter custom domain `ploos.no` in GitHub Pages settings.
+4. Point DNS A/AAAA and www CNAME records to GitHub Pages. **Preserve email DNS records.**
+5. Enable HTTPS when certificate is ready. Confirm the domain is verified.
+6. Any future push to `main` deploys automatically.
 
-Merge to `main`, then in repository Settings → Pages set **Source: GitHub Actions**. The included workflow builds and deploys `dist/`. Set custom domain to `ploos.no` and configure DNS according to GitHub Pages documentation. Enable HTTPS after DNS resolves. Do not change MX records used for email. Publication is not activated merely by merging the workflow.
+The deployed `public/CNAME` file is set to `ploos.no`; it doesn't replace configuration of Pages settings.
 
 ## Licensing
-Code: MIT. Original editorial text: CC BY 4.0. Company names and trademarks excluded.
+MIT for code and CC BY 4.0 for original editorial text. Names, brand marks and third-party assets excluded.
