@@ -1,11 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="Personvern" description="Personverninformasjon for ploos.no.">
-<section class="wrap hero"><h1>Personvern</h1>
-<p class="lead">Ploos AS er ansvarlig for behandling av personopplysninger som sendes gjennom kontaktskjemaet.</p>
-<h2>Hva vi behandler</h2><p>Navn, kontaktadresse, emne, melding og nødvendige tekniske data ved innsending. Vi bruker opplysningene for å besvare henvendelser (berettiget interesse eller tiltak før avtale).</p>
-<h2>Leverandører</h2><p>Når skjemaet aktiveres, formidles henvendelser gjennom Cloudflare Workers og e-posttjenesten Resend. Spamkontroll utføres med Cloudflare Turnstile. Leverandørenes behandling, lagring og eventuelle overføringer utenfor EØS må avklares og dokumenteres før løsningen tas i bruk.</p>
-<h2>Lagring og rettigheter</h2><p>Henvendelser skal bare lagres så lenge det er nødvendig for oppfølging og eventuelle lovpålagte forpliktelser. Du kan be om innsyn, retting eller sletting der regelverket gir rett til det.</p>
-<p>For personvernhenvendelser, benytt <a href="/kontakt/">kontaktskjemaet</a> når det er aktivert. Fullstendige kontakt- og virksomhetsopplysninger skal legges inn før produksjonslansering.</p>
+<Base title="Personvern" description="Personverninformasjon for ploos.no."><section class="wrap hero">
+<h1>Personvern</h1><p class="lead">Ploos AS er behandlingsansvarlig for personopplysninger sendt gjennom kontaktskjemaet.</p>
+<h2>Opplysninger og formål</h2><p>Navn, avsenderadresse, emne og melding behandles for å følge opp henvendelser. Nødvendige tekniske data brukes til å hindre misbruk.</p>
+<h2>Leverandører</h2><p>Nettsiden leveres via GitHub Pages. Ved aktivering behandler Cloudflare Workers og Turnstile skjemainnsendinger, og Proton Mail leverer og lagrer meldingene. Lagring, databehandleravtaler og eventuell overføring utenfor EØS gjennomgås før aktivering.</p>
+<h2>Lagring og rettigheter</h2><p>Henvendelser beholdes så lenge det er nødvendig for oppfølging og lovpålagte krav. Du kan be om innsyn, retting og sletting der regelverket gir rett til det.</p><p>Fullstendig juridisk kontaktinformasjon og sletterutiner må verifiseres før produksjonslansering.</p>
 </section></Base>
