@@ -3,13 +3,13 @@ import '../styles/global.css';
 interface Props { lang?: 'nb' | 'en'; title: string; description: string }
 const {lang='nb',title,description}=Astro.props;
 const en=lang==='en';
-const nav=en?[['Home','/en/'],['About','/en/about/'],['Partners','/en/partners/'],['Contact','/en/contact/']]:[['Hjem','/'],['Om oss','/om-oss/'],['Partnere','/partnere/'],['Kontakt','/kontakt/']];
+const nav=en?[['Home','/en/'],['About','/en/about/'],['Partners','/en/partners/'],['Contact','/en/contact/']]:[['Hjem','/'],['Om oss','/om-oss/'],['Partnere','/partnere/'],['Brukt IT-utstyr','/brukt-it-utstyr/'],['Kontakt','/kontakt/']];
 const canonical=new URL(Astro.url.pathname,Astro.site);
 const paths:Record<string,string>={
  '/':'/en/','/om-oss/':'/en/about/','/partnere/':'/en/partners/','/kontakt/':'/en/contact/','/personvern/':'/en/privacy/',
  '/en/':'/','/en/about/':'/om-oss/','/en/partners/':'/partnere/','/en/contact/':'/kontakt/','/en/privacy/':'/personvern/'
 };
-const alternate=new URL(paths[Astro.url.pathname]||(en?'/':'/en/'),Astro.site);
+const alternate=paths[Astro.url.pathname] ? new URL(paths[Astro.url.pathname],Astro.site) : null;
 ---
 <!doctype html>
 <html lang={lang}>
@@ -25,7 +25,7 @@ const alternate=new URL(paths[Astro.url.pathname]||(en?'/':'/en/'),Astro.site);
   <meta property="og:url" content={canonical.toString()} />
   <meta name="robots" content="index,follow" />
   <link rel="canonical" href={canonical.toString()} />
-  <link rel="alternate" hreflang={en?'nb':'en'} href={alternate.toString()} />
+  {alternate && <link rel="alternate" hreflang={en?'nb':'en'} href={alternate.toString()} />}
   <link rel="alternate" hreflang={lang} href={canonical.toString()} />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <title>{title} | Ploos AS</title>
@@ -51,7 +51,7 @@ const alternate=new URL(paths[Astro.url.pathname]||(en?'/':'/en/'),Astro.site);
     <nav aria-label={en?'Footer':'Bunnmeny'} class="footer-nav">
       <a href={en?'/en/about/':'/om-oss/'}>{en?'About':'Om oss'}</a>
       <a href={en?'/en/partners/':'/partnere/'}>{en?'Partnerships':'Partnere'}</a>
-      <a href={en?'/en/contact/':'/kontakt/'}>{en?'Contact form':'Kontaktskjema'}</a>
+      {!en && <a href="/brukt-it-utstyr/">Selg brukt IT-utstyr</a>}<a href={en?'/en/contact/':'/kontakt/'}>{en?'Contact form':'Kontaktskjema'}</a>
       <a href={en?'/en/privacy/':'/personvern/'}>{en?'Privacy':'Personvern'}</a>
     </nav>
   </div>
