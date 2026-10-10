@@ -1,19 +1,22 @@
-# Contact receiver — GitHub Pages + Domeneshop DNS
+# Contact receiver — Domeneshop DNS + GitHub Pages
 
-The contact form cannot deliver messages using GitHub Pages alone. The Worker receives submissions via its `workers.dev` hostname and sends mail through Resend. **Domeneshop stays the DNS provider; no nameserver move or Cloudflare proxy is needed.**
+GitHub Pages is static; mail cannot be delivered until the backend is configured and tested. Cloudflare Workers runs at a free-style `workers.dev` address while Domeneshop remains authoritative for `ploos.no`.
 
-## Configure backend
-1. Create a Cloudflare account (free Workers plan may suffice subject to current service limits).
-2. From this directory run `npx wrangler login`, then `npx wrangler deploy`. Save the resulting `https://ploos-contact.<account>.workers.dev/` URL.
-3. Create a Resend account, verify a **sending subdomain** such as `mail.ploos.no`. In Domeneshop, create exactly the verification/DKIM/SPF records Resend supplies for this subdomain. **Do not replace ploos.no MX or other existing mail records.**
-4. Set secrets from the worker directory, supplying values interactively:
+## Required setup
+
+1. Create/sign into Cloudflare, enable Workers and run `cd worker && npx wrangler login && npx wrangler deploy`. Copy the resulting HTTPS `workers.dev` URL. Cloudflare account access and initial creation must be completed by its owner.
+2. Create/sign into Resend and verify a **separate sending subdomain** (for example, `mail.ploos.no`). Add only the DNS records supplied by Resend in Domeneshop. **Never replace existing `ploos.no` MX/SPF/DKIM/DMARC records.** Make sure Resend confirms domain verification.
+3. In Cloudflare Turnstile, create a managed widget restricted to `ploos.no` and `www.ploos.no`. Save site key (public) and secret key (private).
+4. Set the following confidential Worker secrets, supplying each value interactively, never in GitHub or website source:
    - `npx wrangler secret put RESEND_API_KEY`
    - `npx wrangler secret put CONTACT_TO_EMAIL`
    - `npx wrangler secret put CONTACT_FROM_EMAIL`
-5. In GitHub repository **Settings → Secrets and variables → Actions → Variables**, create `PUBLIC_CONTACT_ENDPOINT` with the exact `workers.dev` HTTPS URL.
-6. Re-run the **Deploy GitHub Pages** workflow; verify both Norwegian and English contact forms by sending test messages and checking actual receipt. Before this setting exists, the website displays an honest "temporarily unavailable" notice instead of a broken form.
-7. Add server-side rate limiting (Cloudflare WAF/Turnstile or equivalent) before public use; the honeypot is only a basic protection. Publish accurate privacy information covering the contact form, Resend and Cloudflare before collecting submissions.
+   - `npx wrangler secret put TURNSTILE_SECRET_KEY`
+5. In GitHub repository **Settings → Secrets and variables → Actions → Variables**, set:
+   - `PUBLIC_CONTACT_ENDPOINT` to the exact HTTPS Worker URL
+   - `PUBLIC_TURNSTILE_SITE_KEY` to the public Turnstile widget key
+6. Re-run **Deploy GitHub Pages** on `main`. Form only renders when both public values exist. Send a real end-to-end test from both `/kontakt/` and `/en/contact/` and confirm successful arrival at the private recipient inbox.
+7. Add request rate limiting in Cloudflare for the Worker (where supported) and monitor abusive traffic. Turnstile tokens are verified server-side, bound to the intended action and allowed hostname. A honeypot adds basic protection.
+8. Before activation, review both privacy pages, data-processing agreements, location of processing, retention, and add verified legal company/contact details. Do not claim GDPR compliance without completing this review.
 
-Recipient and sender email addresses stay in **Worker secrets**, not in browser-side code or the Git repository. API tokens must never be committed.
-
-Note: Earlier published addresses can remain visible in git history or search engine caches; removing live links does not erase previously published text.
+Notes: The browser receives only a Worker URL and public Turnstile site key. The recipient mailbox, sender address, Resend API key, and Turnstile secret must never appear in HTML, JavaScript, or repository history. An address previously published might remain in Git history or search engine caches; removing links does not erase history.
