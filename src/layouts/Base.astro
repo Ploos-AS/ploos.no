@@ -9,7 +9,8 @@ const paths:Record<string,string>={
  '/':'/en/','/om-oss/':'/en/about/','/partnere/':'/en/partners/','/kontakt/':'/en/contact/','/personvern/':'/en/privacy/',
  '/en/':'/','/en/about/':'/om-oss/','/en/partners/':'/partnere/','/en/contact/':'/kontakt/','/en/privacy/':'/personvern/'
 };
-const alternate=paths[Astro.url.pathname] ? new URL(paths[Astro.url.pathname],Astro.site) : null;
+const hasTranslation=Boolean(paths[Astro.url.pathname]);
+const alternate=hasTranslation ? new URL(paths[Astro.url.pathname],Astro.site) : null;
 ---
 <!doctype html>
 <html lang={lang}>
@@ -40,7 +41,7 @@ const alternate=paths[Astro.url.pathname] ? new URL(paths[Astro.url.pathname],As
     </a>
     <nav aria-label={en?'Main navigation':'Hovedmeny'} class="nav">
       {nav.map(([label,href])=><a href={href} aria-current={Astro.url.pathname===href?'page':undefined}>{label}</a>)}
-      <a class="lang-switch" href={paths[Astro.url.pathname]||(en?'/':'/en/')} lang={en?'nb':'en'}>{en?'NO':'EN'} <span aria-hidden="true">↗</span></a>
+      <a class="lang-switch" href={paths[Astro.url.pathname]||(en?'/':'/en/')} lang={en?'nb':'en'} aria-label={hasTranslation?(en?'Vis siden på norsk':'View this page in English'):(en?'Norwegian home':'English home')}>{en?'NO':'EN'} <span aria-hidden="true">↗</span></a>
     </nav>
   </div>
 </header>
