@@ -16,14 +16,18 @@ async function walk(dir) {
 }
 const files = await walk(root);
 if (files.length < 10) fail('Expected at least ten generated website pages.');
-const paths = new Set(files.map(f => '/' + path.relative(root, path.dirname(f)).split(path.sep).filter(Boolean).join('/') + '/'));
+const toUrlPath = file => {
+  const rel = path.relative(root, path.dirname(file)).split(path.sep).filter(Boolean).join('/');
+  return rel ? '/' + rel + '/' : '/';
+};
+const paths = new Set(files.map(toUrlPath));
 const sorted = [...paths].sort();
 if (!paths.has('/')) fail('Norwegian home is missing.');
 if (!paths.has('/en/')) fail('English home is missing.');
 if (!paths.has('/brukt-it-utstyr/')) fail('Norwegian SMB landing page is missing.');
 
 for (const file of files) {
-  const urlPath = '/' + path.relative(root, path.dirname(file)).split(path.sep).filter(Boolean).join('/') + '/';
+  const urlPath = toUrlPath(file);
   const html = await readFile(file, 'utf8');
   if (!/<title>[^<]+<\/title>/.test(html)) fail(urlPath + ': title missing');
   if (!/<meta name="description"/.test(html)) fail(urlPath + ': description missing');
