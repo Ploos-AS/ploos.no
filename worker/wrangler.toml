@@ -1,0 +1,13 @@
+name = "ploos-contact"
+main = "src/index.js"
+compatibility_date = "2026-10-10"
+workers_dev = false
+routes = [
+  { pattern = "contact.ploos.no/*", zone_name = "ploos.no" }
+]
+
+# After creating the Worker and a proxied DNS record for contact.ploos.no,
+# configure secrets using: npx wrangler secret put RESEND_API_KEY
+#                             npx wrangler secret put CONTACT_TO_EMAIL
+#                             npx wrangler secret put CONTACT_FROM_EMAIL
+# Do not commit personal addresses or API keys.

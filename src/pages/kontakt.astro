@@ -1,4 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
+import ContactForm from '../components/ContactForm.astro';
 ---
-<Base title="Kontakt" description="Kontakt Ploos AS."><section class="wrap hero"><h1>Kontakt</h1><p class="lead">For spørsmål om samarbeid og teknologi:</p><a href="mailto:pgo@ploos.no">pgo@ploos.no</a></section></Base>
+<Base title="Kontakt" description="Send en henvendelse til Ploos AS via kontaktskjemaet.">
+<section class="wrap hero"><p class="uppercase tracking-widest text-cyan-300">Ploos AS</p><h1>Kontakt oss</h1><p class="lead">For spørsmål om samarbeid, leverandøravtaler eller teknologi, bruk skjemaet nedenfor.</p><ContactForm /></section>
+</Base>
