@@ -5,8 +5,57 @@ const {lang='nb',title,description}=Astro.props;
 const en=lang==='en';
 const nav=en?[['Home','/en/'],['About','/en/about/'],['Partners','/en/partners/'],['Contact','/en/contact/']]:[['Hjem','/'],['Om oss','/om-oss/'],['Partnere','/partnere/'],['Kontakt','/kontakt/']];
 const canonical=new URL(Astro.url.pathname,Astro.site);
+const paths:Record<string,string>={
+ '/':'/en/','/om-oss/':'/en/about/','/partnere/':'/en/partners/','/kontakt/':'/en/contact/','/personvern/':'/en/privacy/',
+ '/en/':'/','/en/about/':'/om-oss/','/en/partners/':'/partnere/','/en/contact/':'/kontakt/','/en/privacy/':'/personvern/'
+};
+const alternate=new URL(paths[Astro.url.pathname]||(en?'/':'/en/'),Astro.site);
 ---
-<!doctype html><html lang={lang}><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="description" content={description}/><meta name="theme-color" content="#081522"/><title>{title} | Ploos AS</title><link rel="canonical" href={canonical}/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/></head><body>
-<a href="#main" class="skip"> {en?'Skip to content':'Hopp til innhold'} </a>
-<header class="wrap flex justify-between flex-wrap gap-6"><a href={en?'/en/':'/'} class="font-bold text-2xl" aria-label="Ploos AS">PLOOS<span class="text-cyan-300">.</span></a><nav class="nav" aria-label={en?'Main navigation':'Hovedmeny'}>{nav.map(([label,href])=><a href={href}>{label}</a>)}<a href={en?'/':'/en/'} lang={en?'nb':'en'}>{en?'Norsk':'English'}</a></nav></header>
-<main id="main"><slot/></main><footer class="wrap"><p>© {new Date().getFullYear()} Ploos AS · {en?'Norway':'Norge'}</p><p><a href={en?'/en/contact/':'/kontakt/'}>{en?'Contact':'Kontakt'}</a></p></footer></body></html>
+<!doctype html>
+<html lang={lang}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#071423" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Ploos AS" />
+  <meta property="og:title" content={title+' | Ploos AS'} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical.toString()} />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href={canonical.toString()} />
+  <link rel="alternate" hreflang={en?'nb':'en'} href={alternate.toString()} />
+  <link rel="alternate" hreflang={lang} href={canonical.toString()} />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <title>{title} | Ploos AS</title>
+</head>
+<body>
+<a href="#main" class="skip">{en?'Skip to content':'Hopp til innhold'}</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a href={en?'/en/':'/'} class="brand" aria-label="Ploos AS – home">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span>PLOOS<span class="brand-accent">.</span><span class="brand-as">AS</span></span>
+    </a>
+    <nav aria-label={en?'Main navigation':'Hovedmeny'} class="nav">
+      {nav.map(([label,href])=><a href={href} aria-current={Astro.url.pathname===href?'page':undefined}>{label}</a>)}
+      <a class="lang-switch" href={paths[Astro.url.pathname]||(en?'/':'/en/')} lang={en?'nb':'en'}>{en?'NO':'EN'} <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+</header>
+<main id="main"><slot /></main>
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div><div class="footer-brand">PLOOS<span>.</span> AS</div><p>{en?'Open technology. Built for practical use.':'Åpen teknologi. Utviklet for praktisk bruk.'}</p></div>
+    <nav aria-label={en?'Footer':'Bunnmeny'} class="footer-nav">
+      <a href={en?'/en/about/':'/om-oss/'}>{en?'About':'Om oss'}</a>
+      <a href={en?'/en/partners/':'/partnere/'}>{en?'Partnerships':'Partnere'}</a>
+      <a href={en?'/en/contact/':'/kontakt/'}>{en?'Contact form':'Kontaktskjema'}</a>
+      <a href={en?'/en/privacy/':'/personvern/'}>{en?'Privacy':'Personvern'}</a>
+    </nav>
+  </div>
+  <div class="container footer-bottom"><span>© {new Date().getFullYear()} Ploos AS · {en?'Norway':'Norge'}</span><a href="https://github.com/Ploos-AS" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div>
+</footer>
+</body>
+</html>
