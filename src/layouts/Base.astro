@@ -36,7 +36,7 @@ const alternate=paths[Astro.url.pathname] ? new URL(paths[Astro.url.pathname],As
   <div class="container header-inner">
     <a href={en?'/en/':'/'} class="brand" aria-label="Ploos AS – home">
       <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
-      <span>PLOOS<span class="brand-accent">.</span><span class="brand-as">AS</span></span>
+      <span>PLOOS<span class="brand-accent">.</span></span>
     </a>
     <nav aria-label={en?'Main navigation':'Hovedmeny'} class="nav">
       {nav.map(([label,href])=><a href={href} aria-current={Astro.url.pathname===href?'page':undefined}>{label}</a>)}
