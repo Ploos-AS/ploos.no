@@ -1,0 +1,1 @@
+Keep Norwegian/English content aligned. Do not imply HackShack or Labs are launched yet. No reseller authorizations without evidence. shells.no is out of scope. No analytics/tracking without consent and review. Run npm run check and npm run build before release.

@@ -1,0 +1,12 @@
+---
+import '../styles/global.css';
+interface Props { lang?: 'nb' | 'en'; title: string; description: string }
+const {lang='nb',title,description}=Astro.props;
+const en=lang==='en';
+const nav=en?[['Home','/en/'],['About','/en/about/'],['Partners','/en/partners/'],['Contact','/en/contact/']]:[['Hjem','/'],['Om oss','/om-oss/'],['Partnere','/partnere/'],['Kontakt','/kontakt/']];
+const canonical=new URL(Astro.url.pathname,Astro.site);
+---
+<!doctype html><html lang={lang}><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="description" content={description}/><meta name="theme-color" content="#081522"/><title>{title} | Ploos AS</title><link rel="canonical" href={canonical}/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/></head><body>
+<a href="#main" class="skip"> {en?'Skip to content':'Hopp til innhold'} </a>
+<header class="wrap flex justify-between flex-wrap gap-6"><a href={en?'/en/':'/'} class="font-bold text-2xl" aria-label="Ploos AS">PLOOS<span class="text-cyan-300">.</span></a><nav class="nav" aria-label={en?'Main navigation':'Hovedmeny'}>{nav.map(([label,href])=><a href={href}>{label}</a>)}<a href={en?'/':'/en/'} lang={en?'nb':'en'}>{en?'Norsk':'English'}</a></nav></header>
+<main id="main"><slot/></main><footer class="wrap"><p>© {new Date().getFullYear()} Ploos AS · {en?'Norway':'Norge'}</p><p><a href={en?'/en/contact/':'/kontakt/'}>{en?'Contact':'Kontakt'}</a></p></footer></body></html>
