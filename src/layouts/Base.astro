@@ -30,6 +30,16 @@ const alternate=hasTranslation ? new URL(paths[Astro.url.pathname],Astro.site) :
   <link rel="alternate" hreflang={lang} href={canonical.toString()} />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <title>{title} | Ploos AS</title>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context':'https://schema.org',
+    '@type':'Organization',
+    name:'Ploos AS',
+    legalName:'PLOOS AS',
+    url:'https://ploos.no',
+    identifier:'931173723',
+    address:{'@type':'PostalAddress',streetAddress:'Nedre Høgåsen 2',postalCode:'4440',addressLocality:'Tonstad',addressCountry:'NO'},
+    sameAs:['https://github.com/Ploos-AS']
+  })} />
 </head>
 <body>
 <a href="#main" class="skip">{en?'Skip to content':'Hopp til innhold'}</a>
@@ -56,7 +66,7 @@ const alternate=hasTranslation ? new URL(paths[Astro.url.pathname],Astro.site) :
       <a href={en?'/en/privacy/':'/personvern/'}>{en?'Privacy':'Personvern'}</a>
     </nav>
   </div>
-  <div class="container footer-bottom"><span>© {new Date().getFullYear()} Ploos AS · {en?'Norway':'Norge'}</span><a href="https://github.com/Ploos-AS" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div>
+  <div class="container footer-bottom"><span>© {new Date().getFullYear()} Ploos AS · {en?'Org. no.':'Org.nr.'} 931 173 723 · {en?'Sirdal, Norway':'Sirdal, Norge'}</span><a href="https://virksomhet.brreg.no/nb/oppslag/enheter/931173723" rel="noopener noreferrer">{en?'Norwegian company register':'Brønnøysundregistrene'} <span aria-hidden="true">↗</span></a><a href="https://github.com/Ploos-AS" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div>
 </footer>
 </body>
 </html>
