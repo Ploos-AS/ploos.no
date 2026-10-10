@@ -44,7 +44,7 @@ const alternate=hasTranslation ? new URL(paths[Astro.url.pathname],Astro.site) :
 <a href="#main" class="skip">{en?'Skip to content':'Hopp til innhold'}</a>
 <header class="site-header">
   <div class="container header-inner">
-    <a href={en?'/en/':'/'} class="brand" aria-label="Ploos AS – home">
+    <a href={en?'/en/':'/'} class="brand" aria-label={en?"Ploos AS – home":"Ploos AS – hjem"}>
       <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
       <span>PLOOS<span class="brand-accent">.</span></span>
     </a>
