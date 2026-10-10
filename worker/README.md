@@ -1,19 +1,29 @@
-# Contact receiver — GitHub Pages + Domeneshop DNS
+# Ploos contact receiver — Proton SMTP
 
-The contact form cannot deliver messages using GitHub Pages alone. The Worker receives submissions via its `workers.dev` hostname and sends mail through Resend. **Domeneshop stays the DNS provider; no nameserver move or Cloudflare proxy is needed.**
+Site: GitHub Pages. DNS: Domeneshop. Mail: **Proton Mail**. Receiver: Cloudflare Worker at a `workers.dev` URL. There is **no Resend/Brevo dependency**.
 
-## Configure backend
-1. Create a Cloudflare account (free Workers plan may suffice subject to current service limits).
-2. From this directory run `npx wrangler login`, then `npx wrangler deploy`. Save the resulting `https://ploos-contact.<account>.workers.dev/` URL.
-3. Create a Resend account, verify a **sending subdomain** such as `mail.ploos.no`. In Domeneshop, create exactly the verification/DKIM/SPF records Resend supplies for this subdomain. **Do not replace ploos.no MX or other existing mail records.**
-4. Set secrets from the worker directory, supplying values interactively:
-   - `npx wrangler secret put RESEND_API_KEY`
-   - `npx wrangler secret put CONTACT_TO_EMAIL`
-   - `npx wrangler secret put CONTACT_FROM_EMAIL`
-5. In GitHub repository **Settings → Secrets and variables → Actions → Variables**, create `PUBLIC_CONTACT_ENDPOINT` with the exact `workers.dev` HTTPS URL.
-6. Re-run the **Deploy GitHub Pages** workflow; verify both Norwegian and English contact forms by sending test messages and checking actual receipt. Before this setting exists, the website displays an honest "temporarily unavailable" notice instead of a broken form.
-7. Add server-side rate limiting (Cloudflare WAF/Turnstile or equivalent) before public use; the honeypot is only a basic protection. Publish accurate privacy information covering the contact form, Resend and Cloudflare before collecting submissions.
+## Set up securely
 
-Recipient and sender email addresses stay in **Worker secrets**, not in browser-side code or the Git repository. API tokens must never be committed.
+1. In Proton Mail select Settings → All settings → IMAP/SMTP → SMTP tokens and generate an SMTP token named `ploos.no-contact-form` for an active custom-domain address. The SMTP username is the address. The token is shown once only; never share it in chat or commit it.
+2. In Cloudflare create a Workers account, run `cd worker && npx wrangler login && npx wrangler deploy`. Note the HTTPS `workers.dev` URL. Leave Domeneshop nameservers and Proton MX, SPF, DKIM and DMARC unchanged.
+3. In Cloudflare Turnstile create a widget for `ploos.no` and `www.ploos.no`; note the public site key and secret.
+4. Add Worker secrets interactively using Wrangler:
+   - `npx wrangler secret put PROTON_SMTP_USERNAME` — full Proton custom-domain address
+   - `npx wrangler secret put PROTON_SMTP_TOKEN` — generated Proton SMTP token (never the Proton account password)
+   - `npx wrangler secret put CONTACT_TO_EMAIL` — receiving mailbox, may be the same address
+   - `npx wrangler secret put TURNSTILE_SECRET_KEY` — Turnstile secret
+   - Optional: `npx wrangler secret put CONTACT_FROM_EMAIL` — must be a Proton-authorized sender address
+5. In GitHub repo Settings → Secrets and variables → Actions → **Variables**, configure:
+   - `PUBLIC_CONTACT_ENDPOINT` — HTTPS `workers.dev` URL
+   - `PUBLIC_TURNSTILE_SITE_KEY` — public Turnstile site key
+6. After verifying that the Worker can authenticate to Proton and send email, re-run GitHub Pages deployment. The form remains hidden until both public build variables exist. Test both `/kontakt/` and `/en/contact/` and verify actual receipt.
+7. Apply rate limiting and review privacy terms before activating submissions. Turnstile checks are enforced by the Worker, not merely the browser.
 
-Note: Earlier published addresses can remain visible in git history or search engine caches; removing live links does not erase previously published text.
+**Security:** The Worker negotiates STARTTLS on `smtp.protonmail.ch:587` before SMTP AUTH. The token, recipient address and sender address stay server-side. Proton SMTP submission is transport encrypted but the messages are not end-to-end encrypted.
+
+No Cloudflare DNS migration is necessary. SMTP sending does not require changes to the existing Proton DNS entries at Domeneshop.
+
+## Testing / caveats
+- `npm run check` and `npm run build` validate the static site, not real SMTP delivery. A real end-to-end test with Worker credentials is required.
+- If the Worker runtime cannot establish SMTP submission in the selected Cloudflare account/plan, consider a small dedicated SMTP relay or a different backend.
+- Never print SMTP replies containing credentials in logs.
