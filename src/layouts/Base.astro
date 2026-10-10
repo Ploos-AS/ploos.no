@@ -1,0 +1,9 @@
+---
+import '../styles/global.css';
+const {lang='nb',title,description}=Astro.props;
+const en=lang==='en';
+const nav=en?[['Home','/en/'],['About','/en/about/'],['Partners','/en/partners/'],['Contact','/en/contact/']]:[['Hjem','/'],['Om oss','/om-oss/'],['Partnere','/partnere/'],['Kontakt','/kontakt/']];
+---
+<!doctype html><html lang={lang}><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="description" content={description}/><title>{title} | Ploos AS</title><link rel="canonical" href={new URL(Astro.url.pathname,Astro.site)}/></head><body>
+<header class="wrap flex justify-between flex-wrap gap-6"><a href={en?'/en/':'/'} class="font-bold text-2xl">PLOOS AS</a><nav class="nav" aria-label={en?'Main navigation':'Hovedmeny'}>{nav.map(([label,href])=><a href={href}>{label}</a>)}<a href={en?'/':'/en/'}>{en?'Norsk':'English'}</a></nav></header>
+<main id="main"><slot/></main><footer class="wrap"><p>© {new Date().getFullYear()} Ploos AS · Norway</p></footer></body></html>
